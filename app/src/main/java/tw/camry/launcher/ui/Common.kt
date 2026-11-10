@@ -1,0 +1,175 @@
+package tw.camry.launcher.ui
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Pause
+import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.material.icons.rounded.SkipNext
+import androidx.compose.material.icons.rounded.SkipPrevious
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import android.os.SystemClock
+import tw.camry.launcher.LauncherViewModel
+import tw.camry.launcher.data.AppEntry
+import tw.camry.launcher.media.NowPlaying
+import tw.camry.launcher.media.livePosition
+
+@Composable
+fun Panel(
+    modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
+    content: @Composable BoxScope.() -> Unit,
+) {
+    val c = LocalCamry.current
+    Box(
+        modifier
+            .clip(RoundedCornerShape(24.dp))
+            .background(c.surface)
+            .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier),
+        content = content,
+    )
+}
+
+@Composable
+fun PillButton(text: String, modifier: Modifier = Modifier, filled: Boolean = true, onClick: () -> Unit) {
+    val c = LocalCamry.current
+    Box(
+        modifier
+            .clip(RoundedCornerShape(50))
+            .background(if (filled) c.accent else c.surfaceHi)
+            .clickable(onClick = onClick)
+            .padding(horizontal = 28.dp, vertical = 14.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(text, color = if (filled) c.onAccent else c.text, fontSize = 20.sp, fontWeight = FontWeight.Medium)
+    }
+}
+
+@Composable
+fun CircleIconButton(
+    icon: ImageVector,
+    desc: String,
+    size: Dp,
+    filled: Boolean = false,
+    enabled: Boolean = true,
+    onClick: () -> Unit,
+) {
+    val c = LocalCamry.current
+    Box(
+        Modifier
+            .size(size)
+            .clip(CircleShape)
+            .background(if (filled) c.accent else c.surfaceHi)
+            .then(if (enabled) Modifier.clickable(onClick = onClick) else Modifier),
+        contentAlignment = Alignment.Center,
+    ) {
+        Icon(
+            icon, desc, Modifier.size(size * 0.55f),
+            tint = if (!enabled) c.textDim.copy(alpha = 0.4f) else if (filled) c.onAccent else c.text,
+        )
+    }
+}
+
+@Composable
+fun TransportControls(np: NowPlaying, vm: LauncherViewModel, big: Dp) {
+    Row(horizontalArrangement = Arrangement.spacedBy(20.dp), verticalAlignment = Alignment.CenterVertically) {
+        CircleIconButton(Icons.Rounded.SkipPrevious, "上一首", big * 0.75f, enabled = np.hasSession) { vm.media.previous() }
+        CircleIconButton(
+            if (np.playing) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
+            if (np.playing) "暫停" else "播放", big, filled = true, enabled = np.hasSession,
+        ) { vm.media.playPause() }
+        CircleIconButton(Icons.Rounded.SkipNext, "下一首", big * 0.75f, enabled = np.hasSession) { vm.media.next() }
+    }
+}
+
+/** 每 500ms 依 PlaybackState 推算目前進度。 */
+@Composable
+fun rememberLivePosition(np: NowPlaying): Long {
+    val pos by produceState(np.position, np) {
+        while (true) {
+            value = livePosition(np, SystemClock.elapsedRealtime())
+            kotlinx.coroutines.delay(500)
+        }
+    }
+    return pos
+}
+
+@Composable
+fun AppIconTile(
+    app: AppEntry,
+    modifier: Modifier = Modifier,
+    iconSize: Dp = 64.dp,
+    onClick: () -> Unit,
+) {
+    val c = LocalCamry.current
+    Column(
+        modifier
+            .clip(RoundedCornerShape(18.dp))
+            .clickable(onClick = onClick)
+            .padding(12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Image(app.icon, app.label, Modifier.size(iconSize), contentScale = ContentScale.Fit)
+        Spacer(Modifier.size(8.dp))
+        Text(app.label, color = c.text, fontSize = 16.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+    }
+}
+
+@Composable
+fun AppPickerDialog(
+    title: String,
+    apps: List<AppEntry>,
+    onPick: (String?) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val c = LocalCamry.current
+    Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
+        Panel(Modifier.fillMaxWidth(0.82f).fillMaxHeight(0.84f)) {
+            Column(Modifier.padding(24.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(title, color = c.text, fontSize = 26.sp, fontWeight = FontWeight.Medium, modifier = Modifier.weight(1f))
+                    PillButton("清除綁定", filled = false) { onPick(null) }
+                    Spacer(Modifier.width(12.dp))
+                    PillButton("取消", filled = false, onClick = onDismiss)
+                }
+                Spacer(Modifier.size(12.dp))
+                LazyVerticalGrid(GridCells.Adaptive(130.dp), Modifier.weight(1f)) {
+                    items(apps, key = { it.pkg }) { app -> AppIconTile(app) { onPick(app.pkg) } }
+                }
+            }
+        }
+    }
+}
