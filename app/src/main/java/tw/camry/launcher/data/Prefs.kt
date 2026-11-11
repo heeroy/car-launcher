@@ -24,4 +24,12 @@ class Prefs(context: Context) {
     var nightStart: Int
         get() = sp.getInt("night_start", 18)
         set(v) = sp.edit { putInt("night_start", v) }
+
+    var clock24h: Boolean
+        get() = sp.getBoolean("clock_24h", false)
+        set(v) = sp.edit { putBoolean("clock_24h", v) }
+
+    var projectionMode: ProjectionMode
+        get() = runCatching { ProjectionMode.valueOf(sp.getString("projection_mode", "AUTO")!!) }.getOrDefault(ProjectionMode.AUTO)
+        set(v) = sp.edit { putString("projection_mode", v.name) }
 }

@@ -2,6 +2,7 @@ package tw.camry.launcher.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -20,6 +22,8 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ChevronRight
+import androidx.compose.material.icons.rounded.Mic
 import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.SkipNext
@@ -32,6 +36,8 @@ import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -63,20 +69,78 @@ fun Panel(
     )
 }
 
+/** 膠囊按鈕：預設為實車常見的外框樣式；filled 用於「目前選中」的選項。 */
 @Composable
-fun PillButton(text: String, modifier: Modifier = Modifier, filled: Boolean = true, onClick: () -> Unit) {
+fun PillButton(text: String, modifier: Modifier = Modifier, filled: Boolean = false, onClick: () -> Unit) {
     val c = LocalCamry.current
+    val shape = RoundedCornerShape(50)
     Box(
         modifier
-            .clip(RoundedCornerShape(50))
-            .background(if (filled) c.accent else c.surfaceHi)
+            .clip(shape)
+            .then(if (filled) Modifier.background(c.accent) else Modifier.border(1.5.dp, c.outline, shape))
             .clickable(onClick = onClick)
-            .padding(horizontal = 28.dp, vertical = 14.dp),
+            .padding(horizontal = 32.dp, vertical = 14.dp),
         contentAlignment = Alignment.Center,
     ) {
         Text(text, color = if (filled) c.onAccent else c.text, fontSize = 20.sp, fontWeight = FontWeight.Medium)
     }
 }
+
+/** 畫面左上角的標題（圖示＋文字），高度與右上角的狀態列一致。 */
+@Composable
+fun ScreenHeader(icon: ImageVector, title: String, modifier: Modifier = Modifier) {
+    val c = LocalCamry.current
+    Row(modifier.height(StatusBarHeight).padding(horizontal = 24.dp), verticalAlignment = Alignment.CenterVertically) {
+        Icon(icon, null, Modifier.size(28.dp), tint = c.text)
+        Spacer(Modifier.width(14.dp))
+        Text(title, color = c.text, fontSize = 24.sp, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+    }
+}
+
+/** 分組標題：小字＋底線（例如實車設定的「目前駕駛」「我的設定」）。 */
+@Composable
+fun SectionLabel(text: String, modifier: Modifier = Modifier) {
+    val c = LocalCamry.current
+    Column(modifier.fillMaxWidth().padding(top = 12.dp, bottom = 8.dp)) {
+        Text(text, color = c.textDim, fontSize = 17.sp)
+        Spacer(Modifier.height(6.dp))
+        Box(Modifier.fillMaxWidth().height(1.dp).background(c.divider))
+    }
+}
+
+/** 子選單項目：大字，右側 >；選中時加底色。 */
+@Composable
+fun SubMenuRow(text: String, selected: Boolean, onClick: () -> Unit) {
+    val c = LocalCamry.current
+    Row(
+        Modifier.fillMaxWidth().padding(vertical = 2.dp)
+            .clip(RoundedCornerShape(14.dp))
+            .background(if (selected) c.surfaceHi else Color.Transparent)
+            .clickable(onClick = onClick)
+            .padding(horizontal = 20.dp, vertical = 18.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(text, color = c.text, fontSize = 26.sp, fontWeight = FontWeight.Medium, modifier = Modifier.weight(1f))
+        Icon(Icons.Rounded.ChevronRight, null, Modifier.size(28.dp), tint = c.textDim)
+    }
+}
+
+/** 浮動麥克風按鈕（內容區左下角）。 */
+@Composable
+fun MicButton(onClick: () -> Unit) {
+    val c = LocalCamry.current
+    Box(
+        Modifier.size(MicSize).clip(CircleShape)
+            .background(Brush.verticalGradient(listOf(c.micTop, c.micBottom)))
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) { Icon(Icons.Rounded.Mic, "語音", Modifier.size(32.dp), tint = c.onMic) }
+}
+
+val StatusBarHeight: Dp = 64.dp
+val MicSize: Dp = 68.dp
+/** 讓內容避開左下角浮動麥克風的底部留白 */
+val MicClearance: Dp = 108.dp
 
 @Composable
 fun CircleIconButton(

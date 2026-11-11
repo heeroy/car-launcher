@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -38,63 +39,63 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import tw.camry.launcher.LauncherViewModel
-import tw.camry.launcher.data.Slots
 import tw.camry.launcher.data.formatDuration
 
-/** 音訊：左側子選單為「來源」，右側主要區域為播放畫面（手冊「基本畫面功能」的子選單＋主要區域結構）。 */
+/**
+ * 音訊：整個寬度的播放畫面，左上角標題是目前的來源（實車沒有播放時顯示「音訊關閉」）。
+ * 要切換來源，按左下角麥克風旁的「來源」。
+ */
 @Composable
 fun AudioScreen(vm: LauncherViewModel) {
     val c = LocalCamry.current
     val np by vm.media.state.collectAsStateWithLifecycle()
-    val sources = Slots.MUSIC.mapNotNull { vm.appFor(it) }
+    val sourceLabel = np.pkg?.let { pkg -> vm.apps.firstOrNull { it.pkg == pkg }?.label }
+    val title = when {
+        np.hasSession -> sourceLabel ?: "音訊"
+        else -> "音訊關閉"
+    }
 
-    Row(Modifier.fillMaxSize().padding(start = 24.dp, end = 24.dp, bottom = 24.dp, top = 4.dp), horizontalArrangement = Arrangement.spacedBy(24.dp)) {
-        // 子選單：來源
-        Panel(Modifier.width(300.dp).fillMaxHeight()) {
-            Column(Modifier.fillMaxSize().padding(16.dp)) {
-                Text("來源", color = c.textDim, fontSize = 16.sp, modifier = Modifier.padding(8.dp))
-                if (sources.isEmpty()) {
-                    Text("尚未綁定音訊來源\n設定 → App 綁定", color = c.textDim, fontSize = 17.sp, modifier = Modifier.padding(8.dp))
-                }
-                sources.forEach { app ->
-                    val active = np.pkg == app.pkg
-                    Row(
-                        Modifier.fillMaxWidth().padding(vertical = 3.dp)
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(if (active) c.surfaceHi else androidx.compose.ui.graphics.Color.Transparent)
-                            .clickable { vm.launchPackage(app.pkg) }
-                            .padding(12.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Image(app.icon, app.label, Modifier.size(44.dp))
-                        Spacer(Modifier.width(14.dp))
-                        Text(app.label, color = c.text, fontSize = 20.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                    }
-                }
+    Column(Modifier.fillMaxSize()) {
+        ScreenHeader(Icons.Rounded.MusicNote, title)
+        Box(Modifier.weight(1f).fillMaxWidth().padding(start = 24.dp, end = 24.dp, bottom = MicClearance)) {
+            when {
+                !np.hasAccess -> CenterMessage(
+                    "需要「通知存取」才能顯示播放中的音樂",
+                    "只會讀取目前播放的歌名、封面與進度",
+                    "前往開啟",
+                ) { vm.openNotificationAccess() }
+                !np.hasSession -> CenterMessage(
+                    "若要播放音樂，請選擇音訊來源。",
+                    null,
+                    "選擇來源",
+                ) { vm.showSources = true }
+                else -> NowPlayingBody(np, vm)
             }
         }
+    }
+}
 
-        // 主要區域
-        Panel(Modifier.weight(1f).fillMaxHeight()) {
-            if (!np.hasAccess) {
-                Column(Modifier.align(Alignment.Center).padding(32.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("需要「通知存取」才能顯示播放中的音樂", color = c.text, fontSize = 24.sp)
-                    Spacer(Modifier.height(8.dp))
-                    Text("只會讀取目前播放的歌名、封面與進度，不讀取通知內容", color = c.textDim, fontSize = 17.sp)
-                    Spacer(Modifier.height(24.dp))
-                    PillButton("前往開啟") { vm.openNotificationAccess() }
-                }
-            } else {
-                NowPlayingBody(np, vm)
-            }
+/** 實車空白狀態的樣式：音符圖示、一行說明、一個外框按鈕。 */
+@Composable
+private fun BoxScope.CenterMessage(text: String, sub: String?, action: String, onAction: () -> Unit) {
+    val c = LocalCamry.current
+    Column(Modifier.align(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
+        Icon(Icons.Rounded.MusicNote, null, Modifier.size(72.dp), tint = c.text)
+        Spacer(Modifier.height(16.dp))
+        Text(text, color = c.text, fontSize = 24.sp)
+        if (sub != null) {
+            Spacer(Modifier.height(6.dp))
+            Text(sub, color = c.textDim, fontSize = 17.sp)
         }
+        Spacer(Modifier.height(28.dp))
+        PillButton(action, Modifier.width(280.dp), onClick = onAction)
     }
 }
 
 @Composable
 private fun NowPlayingBody(np: tw.camry.launcher.media.NowPlaying, vm: LauncherViewModel) {
     val c = LocalCamry.current
-    Row(Modifier.fillMaxSize().padding(36.dp), verticalAlignment = Alignment.CenterVertically) {
+    Row(Modifier.fillMaxSize().padding(horizontal = 36.dp), verticalAlignment = Alignment.CenterVertically) {
         Box(
             Modifier.fillMaxHeight(0.82f).aspectRatio(1f)
                 .clip(RoundedCornerShape(24.dp)).background(c.surfaceHi),

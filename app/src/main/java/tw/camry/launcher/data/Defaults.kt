@@ -37,7 +37,8 @@ object Defaults {
     private val navLabels = listOf("導航王", "導航", "地圖", "maps", "waze", "navi")
     private val musicPackages = listOf("com.spotify.music", "com.google.android.apps.youtube.music")
     private val musicLabels = listOf("kkbox", "spotify", "音樂", "music")
-    private val phonePackages = listOf("com.google.android.dialer", "com.android.dialer")
+    private val carplayLabels = listOf("carplay", "carlink", "zlink")
+    private val phonePackages =listOf("com.google.android.dialer", "com.android.dialer")
 
     fun guess(apps: List<Pair<String, String>>): Map<String, String> {
         val out = linkedMapOf<String, String>()
@@ -46,7 +47,9 @@ object Defaults {
             apps.firstOrNull { it.first in packages }?.first
                 ?: apps.firstOrNull { (_, l) -> labels.any { l.contains(it, ignoreCase = true) } }?.first
 
-        apps.firstOrNull { it.second.contains("carplay", ignoreCase = true) }?.let { out[Slots.CARPLAY] = it.first }
+        // 智乘車機的 CarPlay App 叫「CarLink」
+        apps.firstOrNull { (_, l) -> carplayLabels.any { l.contains(it, ignoreCase = true) } }
+            ?.let { out[Slots.CARPLAY] = it.first }
 
         (apps.firstOrNull { it.first == "com.google.android.projection.gearhead" }
             ?: apps.firstOrNull { it.second.equals("Android Auto", ignoreCase = true) })

@@ -3,6 +3,7 @@ package tw.camry.launcher
 import android.app.Application
 import android.bluetooth.BluetoothManager
 import android.content.Intent
+import android.hardware.usb.UsbManager
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
@@ -21,6 +22,14 @@ import tw.camry.launcher.data.AppEntry
 import tw.camry.launcher.data.AppRepository
 import tw.camry.launcher.data.Defaults
 import tw.camry.launcher.data.Prefs
+import tw.camry.launcher.data.ProjectionMode
+import tw.camry.launcher.data.ProjectionSignals
+import tw.camry.launcher.data.ProjectionStatus
+import tw.camry.launcher.data.UsbInfo
+import tw.camry.launcher.data.isAndroidAccessoryUsb
+import tw.camry.launcher.data.isAppleUsb
+import tw.camry.launcher.data.projectionStatus
+import tw.camry.launcher.data.showProjection
 import tw.camry.launcher.data.Slots
 import tw.camry.launcher.data.ThemeMode
 import tw.camry.launcher.data.resolveNight
@@ -31,6 +40,10 @@ enum class Screen(val title: String) {
     HOME("主頁"), AUDIO("音訊"), APPS("應用程式"), SETTINGS("設定")
 }
 
+enum class SettingsSection(val title: String) {
+    DISPLAY("顯示"), BINDINGS("App 綁定"), SYSTEM("權限與系統"), ABOUT("關於")
+}
+
 class LauncherViewModel(private val app: Application) : AndroidViewModel(app) {
     private val prefs = Prefs(app)
     private val repo = AppRepository(app)
@@ -38,6 +51,9 @@ class LauncherViewModel(private val app: Application) : AndroidViewModel(app) {
 
     var screen by mutableStateOf(Screen.HOME)
         private set
+    var settingsSection by mutableStateOf(SettingsSection.DISPLAY)
+    /** 音訊「來源」全螢幕畫面 */
+    var showSources by mutableStateOf(false)
     var apps by mutableStateOf<List<AppEntry>>(emptyList())
         private set
     var bindings by mutableStateOf<Map<String, String>>(loadBindings())
@@ -56,6 +72,24 @@ class LauncherViewModel(private val app: Application) : AndroidViewModel(app) {
         private set
     var bluetoothOn by mutableStateOf(false)
         private set
+    var clock24h by mutableStateOf(prefs.clock24h)
+        private set
+    var projectionMode by mutableStateOf(prefs.projectionMode)
+        private set
+    var usbDevices by mutableStateOf<List<UsbInfo>>(emptyList())
+        private set
+    var ongoingPkgs by mutableStateOf<Set<String>>(emptySet())
+        private set
+    /** 綁定為 CarPlay／Android Auto 的 App 的常駐通知標題（只用於設定裡的偵測狀態） */
+    var projectionTitles by mutableStateOf<Map<String, List<String>>>(emptyMap())
+        private set
+
+    val carPlayStatus: ProjectionStatus
+        get() = projectionStatus(bindings[Slots.CARPLAY], usbDevices, ongoingPkgs, ::isAppleUsb)
+    val androidAutoStatus: ProjectionStatus
+        get() = projectionStatus(bindings[Slots.ANDROID_AUTO], usbDevices, ongoingPkgs, ::isAndroidAccessoryUsb)
+    val showCarPlay: Boolean get() = showProjection(bindings[Slots.CARPLAY], projectionMode, carPlayStatus)
+    val showAndroidAuto: Boolean get() = showProjection(bindings[Slots.ANDROID_AUTO], projectionMode, androidAutoStatus)
 
     val isNight: Boolean get() = resolveNight(themeMode, now.hour, dayStart, nightStart)
 
@@ -76,9 +110,12 @@ class LauncherViewModel(private val app: Application) : AndroidViewModel(app) {
                 bluetoothOn = runCatching {
                     app.getSystemService(BluetoothManager::class.java)?.adapter?.isEnabled == true
                 }.getOrDefault(false)
+                refreshUsb()
                 delay(5_000)
             }
         }
+        viewModelScope.launch { ProjectionSignals.ongoing.collect { ongoingPkgs = it } }
+        viewModelScope.launch { ProjectionSignals.titles.collect { projectionTitles = it } }
         reloadApps()
     }
 
@@ -101,10 +138,25 @@ class LauncherViewModel(private val app: Application) : AndroidViewModel(app) {
 
     fun onResume() {
         media.refresh()
+        refreshUsb()
         reloadApps()
     }
 
-    fun go(s: Screen) { screen = s }
+    /** 列出 USB 裝置不需要權限（開啟裝置才需要）。 */
+    private fun refreshUsb() {
+        usbDevices = runCatching {
+            app.getSystemService(UsbManager::class.java)?.deviceList?.values?.map {
+                UsbInfo(it.vendorId, it.productId, runCatching { it.productName }.getOrNull() ?: it.deviceName)
+            }
+        }.getOrNull().orEmpty()
+    }
+
+    fun go(s: Screen) { screen = s; showSources = false }
+
+    fun openSettings(section: SettingsSection) {
+        settingsSection = section
+        go(Screen.SETTINGS)
+    }
 
     fun appFor(key: String): AppEntry? = bindings[key]?.let { pkg -> apps.firstOrNull { it.pkg == pkg } }
 
@@ -116,6 +168,8 @@ class LauncherViewModel(private val app: Application) : AndroidViewModel(app) {
     fun updateThemeMode(m: ThemeMode) { prefs.themeMode = m; themeMode = m }
     fun updateDayStart(h: Int) { val v = h.coerceIn(0, 23); prefs.dayStart = v; dayStart = v }
     fun updateNightStart(h: Int) { val v = h.coerceIn(0, 23); prefs.nightStart = v; nightStart = v }
+    fun updateClock24h(v: Boolean) { prefs.clock24h = v; clock24h = v }
+    fun updateProjectionMode(m: ProjectionMode) { prefs.projectionMode = m; projectionMode = m }
 
     /** 開啟綁定的 App；電話沒綁定時退回系統撥號。 */
     fun open(key: String) {

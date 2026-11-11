@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="window_bg">#0E1114</color>
+    <color name="window_bg">#2B3245</color>
     <color name="ic_bg">#EB0A1E</color>
 
     <style name="Theme.CamryLauncher" parent="@android:style/Theme.Material.NoActionBar">

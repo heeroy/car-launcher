@@ -45,7 +45,7 @@ import tw.camry.launcher.data.Slots
 @Composable
 fun HomeScreen(vm: LauncherViewModel) {
     val c = LocalCamry.current
-    Row(Modifier.fillMaxSize().padding(start = 24.dp, end = 24.dp, bottom = 24.dp, top = 4.dp), horizontalArrangement = Arrangement.spacedBy(24.dp)) {
+    Row(Modifier.fillMaxSize().padding(start = 24.dp, end = 24.dp, bottom = 24.dp, top = StatusBarHeight), horizontalArrangement = Arrangement.spacedBy(24.dp)) {
         NavigationCard(vm, Modifier.weight(1.45f).fillMaxHeight())
         Column(Modifier.weight(1f).fillMaxHeight(), verticalArrangement = Arrangement.spacedBy(24.dp)) {
             MiniPlayer(vm, Modifier.weight(1f).fillMaxWidth())
@@ -81,7 +81,8 @@ private fun NavigationCard(vm: LauncherViewModel, modifier: Modifier) {
                     Text("設定 → App 綁定 → 導航", color = c.textDim, fontSize = 18.sp)
                 }
             }
-            Row { PillButton("開啟導航") { vm.open(Slots.NAV) } }
+            // 靠右放，避開左下角的浮動麥克風
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) { PillButton("開啟導航", filled = true) { vm.open(Slots.NAV) } }
         }
     }
 }
