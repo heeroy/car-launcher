@@ -12,8 +12,20 @@ android {
         applicationId = "tw.camry.launcher"
         minSdk = 26
         targetSdk = 34
-        versionCode = 3
-        versionName = "0.2.1"
+        versionCode = 4
+        versionName = "0.2.2"
+    }
+
+    // 固定的 debug 簽章：CI 每次都是新機器，若用預設的 ~/.android/debug.keystore，
+    // 每次建置簽章都不同，車機會拒絕覆蓋安裝。這把金鑰只用於個人側載，不是機密。
+    signingConfigs {
+        getByName("debug") {
+            storeFile = file("debug.p12")
+            storeType = "PKCS12"
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
     }
 
     buildTypes {
