@@ -1,6 +1,6 @@
-# Camry 桌面（Android 車機 Launcher）
+# P4 桌面（Android 車機 Launcher）
 
-仿照 Toyota Camry（第 9 代）12.3 吋多媒體系統的介面結構，做給 Android 車機用的桌面。
+給 Prius 第 4 代（P4）上的 Android 車機用的桌面，介面仿照 Toyota Camry（第 9 代）12.3 吋多媒體系統的結構。
 目標機：智乘進階機（UIS7870SC、Android 13、2000×1200）。與 Toyota 無關，沒有使用任何 Toyota 標誌。
 
 依據手冊與實車照片的部分：只有圖示的左側主選單（選中為藍色圓底）、左下角浮動麥克風、
@@ -30,13 +30,13 @@
 偵測不準時，可到 設定 → 顯示 改成「有綁定就一律顯示」。實際偵測結果在 設定 → 權限與系統 → CarPlay／Android Auto 偵測狀態。
 
 ## 安裝與測試
-1. 把 `app-debug.apk` 放到隨身碟（0.2.2 起改用固定簽章，之後的版本可以直接覆蓋安裝；從 0.2.1 以前的版本升級，要先移除舊版一次），在車機用檔案管理開啟安裝（需允許未知來源）。
-2. **先不要設為預設桌面**，從原廠桌面點「Camry 桌面」圖示開啟。
+1. 把 `app-debug.apk` 放到隨身碟（0.3.0 起改名為 P4 桌面、套件名稱改為 `tw.p4.launcher`，並使用固定簽章：舊的「Camry 桌面」請先移除，之後的版本可以直接覆蓋安裝），在車機用檔案管理開啟安裝（需允許未知來源）。
+2. **先不要設為預設桌面**，從原廠桌面點「P4 桌面」圖示開啟。
 3. 設定 → 權限與系統 → 開啟通知存取。如果跳出「受限制的設定」（Android 13 對自行安裝 App 的限制），先按「開啟本 App 資訊」，點右上角 ⋮ →「允許受限制的設定」，再回來開通知存取。
-   若車機的 App 資訊頁沒有 ⋮ 選單，可用 adb：`adb shell cmd notification allow_listener tw.camry.launcher/tw.camry.launcher.media.MediaListenerService`。
+   若車機的 App 資訊頁沒有 ⋮ 選單，可用 adb：`adb shell cmd notification allow_listener tw.p4.launcher/tw.p4.launcher.media.MediaListenerService`。
 4. 設定 → App 綁定：確認導航、電話、音訊來源、CarPlay（CarLink）、Android Auto 都綁對。
 5. 連上／拔掉 iPhone，看 設定 → 權限與系統 → CarPlay 偵測狀態 是否跟著變化；不準的話拍照回報。
-6. 確認倒車影像、方向盤按鍵、Home 鍵都正常後，再到「變更預設桌面」選 Camry 桌面。
+6. 確認倒車影像、方向盤按鍵、Home 鍵都正常後，再到「變更預設桌面」選 P4 桌面。
 
 退路：桌面內「設定 → 權限與系統 → 變更預設桌面」，或系統設定 → 應用程式 → 預設應用程式 → 主畫面應用程式，或直接解除安裝。
 

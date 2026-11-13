@@ -1,26 +1,26 @@
-package tw.camry.launcher
+package tw.p4.launcher
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import tw.camry.launcher.data.Defaults
-import tw.camry.launcher.data.Slots
-import tw.camry.launcher.data.ThemeMode
-import tw.camry.launcher.data.ProjectionMode
-import tw.camry.launcher.data.ProjectionStatus
-import tw.camry.launcher.data.UsbInfo
-import tw.camry.launcher.data.formatClock
-import tw.camry.launcher.data.formatDuration
-import tw.camry.launcher.data.isAndroidAccessoryUsb
-import tw.camry.launcher.data.isAppleUsb
-import tw.camry.launcher.data.projectionStatus
-import tw.camry.launcher.data.showProjection
-import tw.camry.launcher.data.isNightAt
-import tw.camry.launcher.data.resolveNight
-import tw.camry.launcher.media.NowPlaying
-import tw.camry.launcher.media.livePosition
+import tw.p4.launcher.data.Defaults
+import tw.p4.launcher.data.Slots
+import tw.p4.launcher.data.ThemeMode
+import tw.p4.launcher.data.ProjectionMode
+import tw.p4.launcher.data.ProjectionStatus
+import tw.p4.launcher.data.UsbInfo
+import tw.p4.launcher.data.formatClock
+import tw.p4.launcher.data.formatDuration
+import tw.p4.launcher.data.isAndroidAccessoryUsb
+import tw.p4.launcher.data.isAppleUsb
+import tw.p4.launcher.data.projectionStatus
+import tw.p4.launcher.data.showProjection
+import tw.p4.launcher.data.isNightAt
+import tw.p4.launcher.data.resolveNight
+import tw.p4.launcher.media.NowPlaying
+import tw.p4.launcher.media.livePosition
 
 class LogicTest {
     @Test fun nightSchedule_defaultHours() {

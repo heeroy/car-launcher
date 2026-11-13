@@ -3,7 +3,7 @@
     <color name="window_bg">#2B3245</color>
     <color name="ic_bg">#EB0A1E</color>
 
-    <style name="Theme.CamryLauncher" parent="@android:style/Theme.Material.NoActionBar">
+    <style name="Theme.P4Launcher" parent="@android:style/Theme.Material.NoActionBar">
         <item name="android:windowBackground">@color/window_bg</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>

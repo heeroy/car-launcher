@@ -1,4 +1,4 @@
-package tw.camry.launcher.media
+package tw.p4.launcher.media
 
 import android.content.ComponentName
 import android.content.Context

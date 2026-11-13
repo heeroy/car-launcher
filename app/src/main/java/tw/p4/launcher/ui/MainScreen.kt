@@ -1,4 +1,4 @@
-package tw.camry.launcher.ui
+package tw.p4.launcher.ui
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
@@ -52,11 +52,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import tw.camry.launcher.LauncherViewModel
-import tw.camry.launcher.Screen
-import tw.camry.launcher.SettingsSection
-import tw.camry.launcher.data.Slots
-import tw.camry.launcher.data.formatClock
+import tw.p4.launcher.LauncherViewModel
+import tw.p4.launcher.Screen
+import tw.p4.launcher.SettingsSection
+import tw.p4.launcher.data.Slots
+import tw.p4.launcher.data.formatClock
 
 @Composable
 fun CamryApp(vm: LauncherViewModel) {

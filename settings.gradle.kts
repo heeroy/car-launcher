@@ -12,5 +12,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "camry-launcher"
+rootProject.name = "p4-launcher"
 include(":app")

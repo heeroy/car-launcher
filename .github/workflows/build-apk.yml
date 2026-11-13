@@ -22,5 +22,5 @@ jobs:
         run: ./gradlew --no-daemon assembleDebug
       - uses: actions/upload-artifact@v7
         with:
-          name: camry-launcher-debug-apk
+          name: p4-launcher-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk

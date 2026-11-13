@@ -1,4 +1,4 @@
-package tw.camry.launcher
+package tw.p4.launcher
 
 import android.app.Application
 import android.bluetooth.BluetoothManager
@@ -19,22 +19,22 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import tw.camry.launcher.data.AppEntry
-import tw.camry.launcher.data.AppRepository
-import tw.camry.launcher.data.Defaults
-import tw.camry.launcher.data.Prefs
-import tw.camry.launcher.data.ProjectionMode
-import tw.camry.launcher.data.ProjectionSignals
-import tw.camry.launcher.data.ProjectionStatus
-import tw.camry.launcher.data.UsbInfo
-import tw.camry.launcher.data.isAndroidAccessoryUsb
-import tw.camry.launcher.data.isAppleUsb
-import tw.camry.launcher.data.projectionStatus
-import tw.camry.launcher.data.showProjection
-import tw.camry.launcher.data.Slots
-import tw.camry.launcher.data.ThemeMode
-import tw.camry.launcher.data.resolveNight
-import tw.camry.launcher.media.MediaMonitor
+import tw.p4.launcher.data.AppEntry
+import tw.p4.launcher.data.AppRepository
+import tw.p4.launcher.data.Defaults
+import tw.p4.launcher.data.Prefs
+import tw.p4.launcher.data.ProjectionMode
+import tw.p4.launcher.data.ProjectionSignals
+import tw.p4.launcher.data.ProjectionStatus
+import tw.p4.launcher.data.UsbInfo
+import tw.p4.launcher.data.isAndroidAccessoryUsb
+import tw.p4.launcher.data.isAppleUsb
+import tw.p4.launcher.data.projectionStatus
+import tw.p4.launcher.data.showProjection
+import tw.p4.launcher.data.Slots
+import tw.p4.launcher.data.ThemeMode
+import tw.p4.launcher.data.resolveNight
+import tw.p4.launcher.media.MediaMonitor
 import java.time.LocalDateTime
 
 enum class Screen(val title: String) {

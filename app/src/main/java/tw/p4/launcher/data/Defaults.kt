@@ -1,4 +1,4 @@
-package tw.camry.launcher.data
+package tw.p4.launcher.data
 
 /** 可綁定的位置。key 會存進 SharedPreferences。 */
 object Slots {

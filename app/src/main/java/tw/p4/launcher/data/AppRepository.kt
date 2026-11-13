@@ -1,4 +1,4 @@
-package tw.camry.launcher.data
+package tw.p4.launcher.data
 
 import android.content.Context
 import android.content.Intent

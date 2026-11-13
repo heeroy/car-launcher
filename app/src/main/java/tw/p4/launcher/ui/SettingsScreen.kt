@@ -1,4 +1,4 @@
-package tw.camry.launcher.ui
+package tw.p4.launcher.ui
 
 import android.os.Build
 import androidx.compose.foundation.Image
@@ -37,13 +37,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import tw.camry.launcher.BuildConfig
-import tw.camry.launcher.LauncherViewModel
-import tw.camry.launcher.Screen
-import tw.camry.launcher.SettingsSection
-import tw.camry.launcher.data.ProjectionMode
-import tw.camry.launcher.data.Slots
-import tw.camry.launcher.data.ThemeMode
+import tw.p4.launcher.BuildConfig
+import tw.p4.launcher.LauncherViewModel
+import tw.p4.launcher.Screen
+import tw.p4.launcher.SettingsSection
+import tw.p4.launcher.data.ProjectionMode
+import tw.p4.launcher.data.Slots
+import tw.p4.launcher.data.ThemeMode
 
 /**
  * 設定：左側子選單（「⚙ 設定」標題＋大字項目＋ >），右側主要區域，中間一條分隔線（實車照片的版型）。

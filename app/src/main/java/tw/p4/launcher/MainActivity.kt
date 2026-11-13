@@ -1,4 +1,4 @@
-package tw.camry.launcher
+package tw.p4.launcher
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,7 +8,7 @@ import androidx.activity.viewModels
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import tw.camry.launcher.ui.CamryApp
+import tw.p4.launcher.ui.CamryApp
 
 class MainActivity : ComponentActivity() {
     private val vm: LauncherViewModel by viewModels()

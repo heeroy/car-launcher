@@ -1,10 +1,10 @@
-package tw.camry.launcher.data
+package tw.p4.launcher.data
 
 import android.content.Context
 import androidx.core.content.edit
 
 class Prefs(context: Context) {
-    private val sp = context.getSharedPreferences("camry_launcher", Context.MODE_PRIVATE)
+    private val sp = context.getSharedPreferences("p4_launcher", Context.MODE_PRIVATE)
 
     fun binding(key: String): String? = sp.getString("bind_$key", null)
     fun setBinding(key: String, pkg: String?) = sp.edit { if (pkg == null) remove("bind_$key") else putString("bind_$key", pkg) }

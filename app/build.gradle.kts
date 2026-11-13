@@ -5,15 +5,15 @@ plugins {
 }
 
 android {
-    namespace = "tw.camry.launcher"
+    namespace = "tw.p4.launcher"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "tw.camry.launcher"
+        applicationId = "tw.p4.launcher"
         minSdk = 26
         targetSdk = 34
-        versionCode = 4
-        versionName = "0.2.2"
+        versionCode = 5
+        versionName = "0.3.0"
     }
 
     // 固定的 debug 簽章：CI 每次都是新機器，若用預設的 ~/.android/debug.keystore，

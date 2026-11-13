@@ -24,7 +24,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="false"
-        android:theme="@style/Theme.CamryLauncher">
+        android:theme="@style/Theme.P4Launcher">
 
         <!-- 同時是一般 App（可先從原廠桌面開啟測試）與 HOME 桌面 -->
         <activity

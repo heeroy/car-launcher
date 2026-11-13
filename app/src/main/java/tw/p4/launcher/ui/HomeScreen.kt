@@ -1,4 +1,4 @@
-package tw.camry.launcher.ui
+package tw.p4.launcher.ui
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -38,9 +38,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import tw.camry.launcher.LauncherViewModel
-import tw.camry.launcher.Screen
-import tw.camry.launcher.data.Slots
+import tw.p4.launcher.LauncherViewModel
+import tw.p4.launcher.Screen
+import tw.p4.launcher.data.Slots
 
 @Composable
 fun HomeScreen(vm: LauncherViewModel) {

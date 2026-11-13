@@ -1,4 +1,4 @@
-package tw.camry.launcher.ui
+package tw.p4.launcher.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -48,10 +48,10 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import android.os.SystemClock
-import tw.camry.launcher.LauncherViewModel
-import tw.camry.launcher.data.AppEntry
-import tw.camry.launcher.media.NowPlaying
-import tw.camry.launcher.media.livePosition
+import tw.p4.launcher.LauncherViewModel
+import tw.p4.launcher.data.AppEntry
+import tw.p4.launcher.media.NowPlaying
+import tw.p4.launcher.media.livePosition
 
 @Composable
 fun Panel(

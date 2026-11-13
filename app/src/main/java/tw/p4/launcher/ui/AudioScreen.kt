@@ -1,4 +1,4 @@
-package tw.camry.launcher.ui
+package tw.p4.launcher.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -38,8 +38,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import tw.camry.launcher.LauncherViewModel
-import tw.camry.launcher.data.formatDuration
+import tw.p4.launcher.LauncherViewModel
+import tw.p4.launcher.data.formatDuration
 
 /**
  * 音訊：整個寬度的播放畫面，左上角標題是目前的來源（實車沒有播放時顯示「音訊關閉」）。
@@ -93,7 +93,7 @@ private fun BoxScope.CenterMessage(text: String, sub: String?, action: String, o
 }
 
 @Composable
-private fun NowPlayingBody(np: tw.camry.launcher.media.NowPlaying, vm: LauncherViewModel) {
+private fun NowPlayingBody(np: tw.p4.launcher.media.NowPlaying, vm: LauncherViewModel) {
     val c = LocalCamry.current
     Row(Modifier.fillMaxSize().padding(horizontal = 36.dp), verticalAlignment = Alignment.CenterVertically) {
         Box(

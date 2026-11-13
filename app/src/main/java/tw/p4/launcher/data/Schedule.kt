@@ -1,4 +1,4 @@
-package tw.camry.launcher.data
+package tw.p4.launcher.data
 
 enum class ThemeMode { AUTO, DAY, NIGHT }
 

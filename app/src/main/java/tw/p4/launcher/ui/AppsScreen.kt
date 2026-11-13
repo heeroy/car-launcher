@@ -1,4 +1,4 @@
-package tw.camry.launcher.ui
+package tw.p4.launcher.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,8 +12,8 @@ import androidx.compose.material.icons.rounded.Apps
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import tw.camry.launcher.LauncherViewModel
-import tw.camry.launcher.Screen
+import tw.p4.launcher.LauncherViewModel
+import tw.p4.launcher.Screen
 
 @Composable
 fun AppsScreen(vm: LauncherViewModel) {
