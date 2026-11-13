@@ -7,6 +7,7 @@ import android.hardware.usb.UsbManager
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
+import android.net.Uri
 import android.provider.Settings
 import android.widget.Toast
 import androidx.compose.runtime.getValue
@@ -197,6 +198,10 @@ class LauncherViewModel(private val app: Application) : AndroidViewModel(app) {
     }
 
     fun openNotificationAccess() = startSafely(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
+    /** 本 App 的「應用程式資訊」頁：Android 13 側載 App 要在這裡的 ⋮ 選單「允許受限制的設定」。 */
+    fun openAppInfo() = startSafely(
+        Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", app.packageName, null)),
+    )
     fun openSystemSettings() = startSafely(Intent(Settings.ACTION_SETTINGS))
     fun openHomeChooser() = startSafely(Intent(Settings.ACTION_HOME_SETTINGS))
 

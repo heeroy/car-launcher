@@ -105,12 +105,12 @@ private fun MiniPlayer(vm: LauncherViewModel, modifier: Modifier) {
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.Center) {
                 Text(
                     if (np.hasSession && np.title.isNotBlank()) np.title
-                    else if (!np.hasAccess) "需要通知存取" else "音訊",
+                    else "音訊",
                     color = c.text, fontSize = 22.sp, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis,
                 )
                 Text(
                     if (np.hasSession) np.artist.ifBlank { "—" }
-                    else if (!np.hasAccess) "設定 → 權限與系統" else "尚無播放中的音樂",
+                    else if (!np.hasAccess) "需開啟通知存取" else "尚無播放中的音樂",
                     color = c.textDim, fontSize = 16.sp, maxLines = 1, overflow = TextOverflow.Ellipsis,
                 )
                 Spacer(Modifier.height(10.dp))

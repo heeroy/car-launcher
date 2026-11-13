@@ -32,7 +32,8 @@
 ## 安裝與測試
 1. 把 `app-debug.apk` 放到隨身碟，在車機用檔案管理開啟安裝（需允許未知來源）。
 2. **先不要設為預設桌面**，從原廠桌面點「Camry 桌面」圖示開啟。
-3. 設定 → 權限與系統 → 開啟通知存取。
+3. 設定 → 權限與系統 → 開啟通知存取。如果跳出「受限制的設定」（Android 13 對自行安裝 App 的限制），先按「開啟本 App 資訊」，點右上角 ⋮ →「允許受限制的設定」，再回來開通知存取。
+   若車機的 App 資訊頁沒有 ⋮ 選單，可用 adb：`adb shell cmd notification allow_listener tw.camry.launcher/tw.camry.launcher.media.MediaListenerService`。
 4. 設定 → App 綁定：確認導航、電話、音訊來源、CarPlay（CarLink）、Android Auto 都綁對。
 5. 連上／拔掉 iPhone，看 設定 → 權限與系統 → CarPlay 偵測狀態 是否跟著變化；不準的話拍照回報。
 6. 確認倒車影像、方向盤按鍵、Home 鍵都正常後，再到「變更預設桌面」選 Camry 桌面。

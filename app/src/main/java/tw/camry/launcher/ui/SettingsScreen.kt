@@ -174,6 +174,16 @@ private fun SystemSection(vm: LauncherViewModel) {
     Text("用來讀取播放中的音樂，以及偵測 CarPlay／Android Auto 的常駐通知。", color = c.textDim, fontSize = 16.sp)
     Spacer(Modifier.height(12.dp))
     PillButton("開啟通知存取設定") { vm.openNotificationAccess() }
+    if (!np.hasAccess) {
+        Spacer(Modifier.height(16.dp))
+        Text(
+            "如果開關按下去跳出「受限制的設定」：這是 Android 13 對自行安裝 App 的限制。" +
+                "請按下方「開啟本 App 資訊」，點右上角 ⋮ →「允許受限制的設定」，再回來開通知存取。",
+            color = c.textDim, fontSize = 16.sp,
+        )
+        Spacer(Modifier.height(12.dp))
+        PillButton("開啟本 App 資訊") { vm.openAppInfo() }
+    }
     Spacer(Modifier.height(24.dp))
     ProjectionDiagnostics(vm)
     Spacer(Modifier.height(24.dp))
@@ -192,6 +202,8 @@ private fun ProjectionDiagnostics(vm: LauncherViewModel) {
     SectionLabel("CarPlay／Android Auto 偵測狀態")
     Text("連上與拔掉手機時看這裡的變化（每 5 秒更新）。如果偵測不準，請把這裡的內容拍照給我。", color = c.textDim, fontSize = 16.sp)
     Spacer(Modifier.height(8.dp))
+    DiagLine("模式", if (vm.projectionMode == ProjectionMode.ALWAYS) "有綁定就一律顯示（不看偵測）" else "偵測到連線才顯示")
+    Spacer(Modifier.height(4.dp))
     listOf(
         Triple("CarPlay", Slots.CARPLAY, vm.carPlayStatus to vm.showCarPlay),
         Triple("Android Auto", Slots.ANDROID_AUTO, vm.androidAutoStatus to vm.showAndroidAuto),
