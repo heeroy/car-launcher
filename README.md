@@ -30,7 +30,7 @@
 偵測不準時，可到 設定 → 顯示 改成「有綁定就一律顯示」。實際偵測結果在 設定 → 權限與系統 → CarPlay／Android Auto 偵測狀態。
 
 ## 安裝與測試
-1. 把 `app-debug.apk` 放到隨身碟（0.3.0 起改名為 P4 桌面、套件名稱改為 `tw.p4.launcher`，並使用固定簽章：舊的「Camry 桌面」請先移除，之後的版本可以直接覆蓋安裝），在車機用檔案管理開啟安裝（需允許未知來源）。
+1. 把 `tw-p4-launcher-debug.apk` 放到隨身碟（0.3.0 起改名為 P4 桌面、套件名稱改為 `tw.p4.launcher`，並使用固定簽章：舊的「Camry 桌面」請先移除，之後的版本可以直接覆蓋安裝），在車機用檔案管理開啟安裝（需允許未知來源）。
 2. **先不要設為預設桌面**，從原廠桌面點「P4 桌面」圖示開啟。
 3. 設定 → 權限與系統 → 開啟通知存取。如果跳出「受限制的設定」（Android 13 對自行安裝 App 的限制），先按「開啟本 App 資訊」，點右上角 ⋮ →「允許受限制的設定」，再回來開通知存取。
    若車機的 App 資訊頁沒有 ⋮ 選單，可用 adb：`adb shell cmd notification allow_listener tw.p4.launcher/tw.p4.launcher.media.MediaListenerService`。
