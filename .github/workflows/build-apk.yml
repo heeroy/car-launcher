@@ -20,9 +20,12 @@ jobs:
         run: ./gradlew --no-daemon testDebugUnitTest
       - name: Build debug APK
         run: ./gradlew --no-daemon assembleDebug
-      - name: Rename APK
-        run: mv app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/debug/tw-p4-launcher-debug.apk
+      - name: Rename APKs
+        run: |
+          mkdir -p out
+          mv app/build/outputs/apk/debug/app-debug.apk out/tw-p4-launcher-debug.apk
+          mv installer/build/outputs/apk/debug/installer-debug.apk out/tw-p4-installer-debug.apk
       - uses: actions/upload-artifact@v7
         with:
           name: p4-launcher-debug-apk
-          path: app/build/outputs/apk/debug/tw-p4-launcher-debug.apk
+          path: out/*.apk

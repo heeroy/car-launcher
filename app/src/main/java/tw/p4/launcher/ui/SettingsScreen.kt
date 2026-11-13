@@ -177,8 +177,9 @@ private fun SystemSection(vm: LauncherViewModel) {
     if (!np.hasAccess) {
         Spacer(Modifier.height(16.dp))
         Text(
-            "如果開關按下去跳出「受限制的設定」：這是 Android 13 對自行安裝 App 的限制。" +
-                "請按下方「開啟本 App 資訊」，點右上角 ⋮ →「允許受限制的設定」，再回來開通知存取。",
+            "如果開關按下去跳出「受限制的設定」：這是 Android 13 對「用檔案管理員安裝的 App」的限制。" +
+                "解法一：按下方「開啟本 App 資訊」，點右上角 ⋮ →「允許受限制的設定」。" +
+                "解法二（App 資訊頁沒有 ⋮ 時）：安裝「P4 安裝器」，把本 App 解除安裝後，用 P4 安裝器重新安裝，再回來開通知存取。",
             color = c.textDim, fontSize = 16.sp,
         )
         Spacer(Modifier.height(12.dp))

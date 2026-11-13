@@ -13,4 +13,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "p4-launcher"
-include(":app")
+include(":app", ":installer")
