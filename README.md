@@ -34,8 +34,8 @@
 
 ## 編譯
 - Android Studio 開啟此資料夾後 Build APK，或 `./gradlew assembleDebug`，輸出在 `app/build/outputs/apk/debug/`。
-- 推到 GitHub 後 Actions（`.github/workflows/build-apk.yml`）會跑單元測試並產出 APK artifact（P4 桌面與 P4 安裝器）。
-- P4 安裝器（`installer/`）：用 PackageInstaller session 安裝 APK 的小工具。0.4.0 起已不需要，仍保留給需要時使用；它在另一個下載包 `p4-installer-debug-apk`。
+- 推到 GitHub 後 Actions（`.github/workflows/build-apk.yml`）會跑單元測試並產出 APK artifact。
+- 0.3.1 曾附一個「P4 安裝器」（用 PackageInstaller session 安裝 APK，避開 Android 13 的受限制設定）。0.4.0 起不需要，已移除；需要時可從 commit `ed358cd` 的 `installer/` 還原。
 
 ## 已知限制
 - 不顯示播放中的歌名、封面與進度（見上方說明）。

@@ -26,14 +26,8 @@ jobs:
           ver() { grep -oP 'versionName = "\K[^"]+' "$1/build.gradle.kts"; }
           mkdir -p out
           mv app/build/outputs/apk/debug/app-debug.apk "out/tw-p4-launcher-$(ver app)-debug.apk"
-          mv installer/build/outputs/apk/debug/installer-debug.apk "out/tw-p4-installer-$(ver installer)-debug.apk"
           ls out
       - uses: actions/upload-artifact@v7
         with:
           name: p4-launcher-debug-apk
           path: out/tw-p4-launcher-*.apk
-      # P4 安裝器很少變動，放在另一個下載包，需要時再用 -n p4-installer-debug-apk 下載
-      - uses: actions/upload-artifact@v7
-        with:
-          name: p4-installer-debug-apk
-          path: out/tw-p4-installer-*.apk
