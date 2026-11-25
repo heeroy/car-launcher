@@ -39,7 +39,6 @@ import androidx.compose.material.icons.rounded.Wifi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,7 +50,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import tw.p4.launcher.LauncherViewModel
 import tw.p4.launcher.Screen
 import tw.p4.launcher.SettingsSection
@@ -86,7 +84,7 @@ fun CamryApp(vm: LauncherViewModel) {
 
 /**
  * 左側主選單：只有圖示，選中時為藍色圓底。
- * CarPlay／Android Auto 只在「有綁定且偵測到連線」時出現在最上面（與實車相同）；
+ * CarPlay／Android Auto 有綁定就出現在最上面；
  * 主頁與應用程式是實車沒有、但本桌面需要的入口。
  */
 @Composable
@@ -164,7 +162,6 @@ private fun MicCluster(vm: LauncherViewModel, modifier: Modifier) {
 @Composable
 private fun SourceOverlay(vm: LauncherViewModel) {
     val c = LocalCamry.current
-    val np by vm.media.state.collectAsStateWithLifecycle()
     val sources = Slots.MUSIC.mapNotNull { vm.appFor(it) }
     Box(
         Modifier.fillMaxSize()
@@ -200,11 +197,9 @@ private fun SourceOverlay(vm: LauncherViewModel) {
                 Text("點右上角「管理裝置」，在 App 綁定裡指定音訊來源", color = Color.White.copy(alpha = 0.8f), fontSize = 20.sp)
             }
             sources.forEach { app ->
-                val active = np.pkg == app.pkg
                 Row(
                     Modifier.fillMaxWidth()
                         .clip(RoundedCornerShape(8.dp))
-                        .background(if (active) Color.White.copy(alpha = 0.22f) else Color.Transparent)
                         .clickable { vm.showSources = false; vm.launchPackage(app.pkg) }
                         .padding(horizontal = 24.dp, vertical = 16.dp),
                     verticalAlignment = Alignment.CenterVertically,

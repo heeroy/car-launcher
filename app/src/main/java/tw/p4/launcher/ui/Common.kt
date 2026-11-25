@@ -24,7 +24,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.Mic
-import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.SkipNext
 import androidx.compose.material.icons.rounded.SkipPrevious
@@ -32,7 +31,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,11 +45,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import android.os.SystemClock
 import tw.p4.launcher.LauncherViewModel
 import tw.p4.launcher.data.AppEntry
-import tw.p4.launcher.media.NowPlaying
-import tw.p4.launcher.media.livePosition
 
 @Composable
 fun Panel(
@@ -167,28 +162,14 @@ fun CircleIconButton(
     }
 }
 
+/** 上一首／播放暫停／下一首：送出媒體按鍵，由目前播放中的 App 處理。 */
 @Composable
-fun TransportControls(np: NowPlaying, vm: LauncherViewModel, big: Dp) {
+fun TransportControls(vm: LauncherViewModel, big: Dp) {
     Row(horizontalArrangement = Arrangement.spacedBy(20.dp), verticalAlignment = Alignment.CenterVertically) {
-        CircleIconButton(Icons.Rounded.SkipPrevious, "上一首", big * 0.75f, enabled = np.hasSession) { vm.media.previous() }
-        CircleIconButton(
-            if (np.playing) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
-            if (np.playing) "暫停" else "播放", big, filled = true, enabled = np.hasSession,
-        ) { vm.media.playPause() }
-        CircleIconButton(Icons.Rounded.SkipNext, "下一首", big * 0.75f, enabled = np.hasSession) { vm.media.next() }
+        CircleIconButton(Icons.Rounded.SkipPrevious, "上一首", big * 0.75f) { vm.media.previous() }
+        CircleIconButton(Icons.Rounded.PlayArrow, "播放／暫停", big, filled = true) { vm.media.playPause() }
+        CircleIconButton(Icons.Rounded.SkipNext, "下一首", big * 0.75f) { vm.media.next() }
     }
-}
-
-/** 每 500ms 依 PlaybackState 推算目前進度。 */
-@Composable
-fun rememberLivePosition(np: NowPlaying): Long {
-    val pos by produceState(np.position, np) {
-        while (true) {
-            value = livePosition(np, SystemClock.elapsedRealtime())
-            kotlinx.coroutines.delay(500)
-        }
-    }
-    return pos
 }
 
 @Composable

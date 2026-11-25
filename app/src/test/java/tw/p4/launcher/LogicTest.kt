@@ -8,19 +8,10 @@ import org.junit.Test
 import tw.p4.launcher.data.Defaults
 import tw.p4.launcher.data.Slots
 import tw.p4.launcher.data.ThemeMode
-import tw.p4.launcher.data.ProjectionMode
-import tw.p4.launcher.data.ProjectionStatus
-import tw.p4.launcher.data.UsbInfo
 import tw.p4.launcher.data.formatClock
 import tw.p4.launcher.data.formatDuration
-import tw.p4.launcher.data.isAndroidAccessoryUsb
-import tw.p4.launcher.data.isAppleUsb
-import tw.p4.launcher.data.projectionStatus
-import tw.p4.launcher.data.showProjection
 import tw.p4.launcher.data.isNightAt
 import tw.p4.launcher.data.resolveNight
-import tw.p4.launcher.media.NowPlaying
-import tw.p4.launcher.media.livePosition
 
 class LogicTest {
     @Test fun nightSchedule_defaultHours() {
@@ -46,13 +37,6 @@ class LogicTest {
     @Test fun formatDuration() {
         assertEquals("0:00", formatDuration(0))
         assertEquals("3:05", formatDuration(185_000))
-    }
-
-    @Test fun livePosition_advancesOnlyWhilePlaying() {
-        val playing = NowPlaying(playing = true, position = 10_000, duration = 100_000, updatedAt = 1_000, speed = 1f)
-        assertEquals(15_000, livePosition(playing, 6_000))
-        assertEquals(10_000, livePosition(playing.copy(playing = false), 6_000))
-        assertEquals(100_000, livePosition(playing, 500_000))
     }
 
     @Test fun defaults_guessKnownApps() {
@@ -85,37 +69,5 @@ class LogicTest {
         assertEquals("11:59 AM", formatClock(11, 59, use24h = false))
         assertEquals("14:43", formatClock(14, 43, use24h = true))
         assertEquals("00:05", formatClock(0, 5, use24h = true))
-    }
-
-    @Test fun usbMatchers() {
-        assertTrue(isAppleUsb(UsbInfo(0x05AC, 0x12A8, "iPhone")))
-        assertFalse(isAppleUsb(UsbInfo(0x18D1, 0x2D00, "Pixel")))
-        assertTrue(isAndroidAccessoryUsb(UsbInfo(0x18D1, 0x2D01, "Android Accessory")))
-        assertFalse(isAndroidAccessoryUsb(UsbInfo(0x18D1, 0x4EE7, "Pixel (MTP)")))
-    }
-
-    @Test fun projection_needsBindingAndDetection() {
-        val iphone = listOf(UsbInfo(0x05AC, 0x12A8, "iPhone"))
-        val none = ProjectionStatus(usb = false, notification = false)
-
-        // 沒綁定：就算偵測到也不顯示
-        val unbound = projectionStatus(null, iphone, emptySet(), ::isAppleUsb)
-        assertFalse(showProjection(null, ProjectionMode.AUTO, unbound))
-        assertFalse(showProjection(null, ProjectionMode.ALWAYS, unbound))
-
-        // 有綁定、沒偵測到：自動模式不顯示，一律顯示模式顯示
-        assertFalse(showProjection("carlink", ProjectionMode.AUTO, none))
-        assertTrue(showProjection("carlink", ProjectionMode.ALWAYS, none))
-
-        // USB 或常駐通知其中一個成立就算連線
-        val byUsb = projectionStatus("carlink", iphone, emptySet(), ::isAppleUsb)
-        assertTrue(byUsb.usb && !byUsb.notification)
-        assertTrue(showProjection("carlink", ProjectionMode.AUTO, byUsb))
-        val byNote = projectionStatus("carlink", emptyList(), setOf("carlink", "other"), ::isAppleUsb)
-        assertTrue(!byNote.usb && byNote.notification)
-        assertTrue(showProjection("carlink", ProjectionMode.AUTO, byNote))
-
-        // 別的 App 的常駐通知不算
-        assertFalse(projectionStatus("carlink", emptyList(), setOf("other"), ::isAppleUsb).connected)
     }
 }

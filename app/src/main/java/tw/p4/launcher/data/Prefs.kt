@@ -29,7 +29,4 @@ class Prefs(context: Context) {
         get() = sp.getBoolean("clock_24h", false)
         set(v) = sp.edit { putBoolean("clock_24h", v) }
 
-    var projectionMode: ProjectionMode
-        get() = runCatching { ProjectionMode.valueOf(sp.getString("projection_mode", "AUTO")!!) }.getOrDefault(ProjectionMode.AUTO)
-        set(v) = sp.edit { putString("projection_mode", v.name) }
 }

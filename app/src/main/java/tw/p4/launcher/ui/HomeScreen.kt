@@ -90,31 +90,18 @@ private fun NavigationCard(vm: LauncherViewModel, modifier: Modifier) {
 @Composable
 private fun MiniPlayer(vm: LauncherViewModel, modifier: Modifier) {
     val c = LocalCamry.current
-    val np by vm.media.state.collectAsStateWithLifecycle()
     Panel(modifier, onClick = { vm.go(Screen.AUDIO) }) {
         Row(Modifier.fillMaxSize().padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
             Box(
                 Modifier.fillMaxHeight().aspectRatio(1f).clip(RoundedCornerShape(16.dp)).background(c.surfaceHi),
                 contentAlignment = Alignment.Center,
-            ) {
-                val art = np.art
-                if (art != null) Image(art, null, Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
-                else Icon(Icons.Rounded.MusicNote, null, Modifier.size(44.dp), tint = c.textDim)
-            }
+            ) { Icon(Icons.Rounded.MusicNote, null, Modifier.size(44.dp), tint = c.textDim) }
             Spacer(Modifier.width(18.dp))
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.Center) {
-                Text(
-                    if (np.hasSession && np.title.isNotBlank()) np.title
-                    else "音訊",
-                    color = c.text, fontSize = 22.sp, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis,
-                )
-                Text(
-                    if (np.hasSession) np.artist.ifBlank { "—" }
-                    else if (!np.hasAccess) "需開啟通知存取" else "尚無播放中的音樂",
-                    color = c.textDim, fontSize = 16.sp, maxLines = 1, overflow = TextOverflow.Ellipsis,
-                )
+                Text("音訊", color = c.text, fontSize = 22.sp, fontWeight = FontWeight.Medium, maxLines = 1)
+                Text("點這裡選擇來源", color = c.textDim, fontSize = 16.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Spacer(Modifier.height(10.dp))
-                TransportControls(np, vm, big = 52.dp)
+                TransportControls(vm, big = 52.dp)
             }
         }
     }

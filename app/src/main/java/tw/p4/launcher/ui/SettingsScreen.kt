@@ -41,7 +41,6 @@ import tw.p4.launcher.BuildConfig
 import tw.p4.launcher.LauncherViewModel
 import tw.p4.launcher.Screen
 import tw.p4.launcher.SettingsSection
-import tw.p4.launcher.data.ProjectionMode
 import tw.p4.launcher.data.Slots
 import tw.p4.launcher.data.ThemeMode
 
@@ -106,14 +105,6 @@ private fun DisplaySection(vm: LauncherViewModel) {
         PillButton("24 小時制（14:43）", filled = vm.clock24h) { vm.updateClock24h(true) }
     }
 
-    Spacer(Modifier.height(20.dp))
-    SectionLabel("左側選單的 CarPlay／Android Auto")
-    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        PillButton("偵測到連線才顯示", filled = vm.projectionMode == ProjectionMode.AUTO) { vm.updateProjectionMode(ProjectionMode.AUTO) }
-        PillButton("有綁定就一律顯示", filled = vm.projectionMode == ProjectionMode.ALWAYS) { vm.updateProjectionMode(ProjectionMode.ALWAYS) }
-    }
-    Spacer(Modifier.height(8.dp))
-    Text("都需要先在「App 綁定」指定 App。偵測不準時可改成一律顯示；偵測狀態在「權限與系統」。", color = c.textDim, fontSize = 16.sp)
 }
 
 @Composable
@@ -167,77 +158,12 @@ private fun BindingsSection(vm: LauncherViewModel) {
 @Composable
 private fun SystemSection(vm: LauncherViewModel) {
     val c = LocalCamry.current
-    val np by vm.media.state.collectAsStateWithLifecycle()
-    SectionLabel("通知存取")
-    Text("通知存取：${if (np.hasAccess) "已允許" else "未允許（音訊畫面無法顯示播放中的音樂）"}", color = c.text, fontSize = 20.sp)
-    Spacer(Modifier.height(12.dp))
-    Text("用來讀取播放中的音樂，以及偵測 CarPlay／Android Auto 的常駐通知。", color = c.textDim, fontSize = 16.sp)
-    Spacer(Modifier.height(12.dp))
-    PillButton("開啟通知存取設定") { vm.openNotificationAccess() }
-    if (!np.hasAccess) {
-        Spacer(Modifier.height(16.dp))
-        Text(
-            "如果開關按下去跳出「受限制的設定」：這是 Android 13 對「用檔案管理員安裝的 App」的限制。" +
-                "解法一：按下方「開啟本 App 資訊」，點右上角 ⋮ →「允許受限制的設定」。" +
-                "解法二（App 資訊頁沒有 ⋮ 時）：安裝「P4 安裝器」，把本 App 解除安裝後，用 P4 安裝器重新安裝，再回來開通知存取。",
-            color = c.textDim, fontSize = 16.sp,
-        )
-        Spacer(Modifier.height(12.dp))
-        PillButton("開啟本 App 資訊") { vm.openAppInfo() }
-    }
-    Spacer(Modifier.height(24.dp))
-    ProjectionDiagnostics(vm)
-    Spacer(Modifier.height(24.dp))
     SectionLabel("預設桌面")
     Text("要換回原廠桌面，或把本桌面設為預設首頁，請用下方按鈕。", color = c.textDim, fontSize = 16.sp)
     Spacer(Modifier.height(12.dp))
     PillButton("變更預設桌面") { vm.openHomeChooser() }
     Spacer(Modifier.height(16.dp))
     PillButton("系統設定") { vm.openSystemSettings() }
-}
-
-/** CarPlay／Android Auto 偵測狀態：在車上確認偵測準不準用。 */
-@Composable
-private fun ProjectionDiagnostics(vm: LauncherViewModel) {
-    val c = LocalCamry.current
-    SectionLabel("CarPlay／Android Auto 偵測狀態")
-    Text("連上與拔掉手機時看這裡的變化（每 5 秒更新）。如果偵測不準，請把這裡的內容拍照給我。", color = c.textDim, fontSize = 16.sp)
-    Spacer(Modifier.height(8.dp))
-    DiagLine("模式", if (vm.projectionMode == ProjectionMode.ALWAYS) "有綁定就一律顯示（不看偵測）" else "偵測到連線才顯示")
-    Spacer(Modifier.height(4.dp))
-    listOf(
-        Triple("CarPlay", Slots.CARPLAY, vm.carPlayStatus to vm.showCarPlay),
-        Triple("Android Auto", Slots.ANDROID_AUTO, vm.androidAutoStatus to vm.showAndroidAuto),
-    ).forEach { (name, slot, pair) ->
-        val (status, shown) = pair
-        val pkg = vm.bindings[slot]
-        val app = vm.appFor(slot)
-        Column(
-            Modifier.fillMaxWidth().padding(vertical = 4.dp)
-                .clip(RoundedCornerShape(14.dp)).background(c.surfaceHi.copy(alpha = 0.5f))
-                .padding(horizontal = 18.dp, vertical = 12.dp),
-        ) {
-            Text("$name：${if (shown) "左側選單顯示中" else "不顯示"}", color = c.text, fontSize = 20.sp, fontWeight = FontWeight.Medium)
-            DiagLine("綁定", app?.let { "${it.label}（${it.pkg}）" } ?: pkg ?: "未綁定")
-            DiagLine("USB", if (status.usb) "偵測到" else "沒有")
-            DiagLine("常駐通知", if (status.notification) "有" else "沒有")
-            pkg?.let { vm.projectionTitles[it] }?.forEach { DiagLine("　通知內容", it) }
-        }
-    }
-    Spacer(Modifier.height(4.dp))
-    DiagLine(
-        "USB 裝置",
-        vm.usbDevices.joinToString("、") { "%04X:%04X %s".format(it.vendorId, it.productId, it.name) }.ifBlank { "（無）" },
-    )
-}
-
-@Composable
-private fun DiagLine(k: String, v: String) {
-    val c = LocalCamry.current
-    Row(Modifier.fillMaxWidth().padding(top = 4.dp)) {
-        Text(k, color = c.textDim, fontSize = 17.sp, modifier = Modifier.width(120.dp))
-        Text(v, color = c.text, fontSize = 17.sp)
-    }
 }
 
 @Composable
