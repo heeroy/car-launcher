@@ -22,9 +22,12 @@ jobs:
         run: ./gradlew --no-daemon assembleDebug
       - name: Rename APKs
         run: |
+          # 檔名加上版號，重複下載時才不會撞名
+          ver() { grep -oP 'versionName = "\K[^"]+' "$1/build.gradle.kts"; }
           mkdir -p out
-          mv app/build/outputs/apk/debug/app-debug.apk out/tw-p4-launcher-debug.apk
-          mv installer/build/outputs/apk/debug/installer-debug.apk out/tw-p4-installer-debug.apk
+          mv app/build/outputs/apk/debug/app-debug.apk "out/tw-p4-launcher-$(ver app)-debug.apk"
+          mv installer/build/outputs/apk/debug/installer-debug.apk "out/tw-p4-installer-$(ver installer)-debug.apk"
+          ls out
       - uses: actions/upload-artifact@v7
         with:
           name: p4-launcher-debug-apk
